@@ -51,7 +51,7 @@ def export_filename(activity, export_format):
         year=activity[1].year,
         month=str(activity[1].month).rjust(2, '0'),
         suffix=format_suffix[export_format])
-    return fn.replace(':', '_') if os.name == 'nt' else fn
+    return fn.replace(':', '_')
 
 
 def need_backup(activities, backup_dir, export_formats=None):
