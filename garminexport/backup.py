@@ -76,12 +76,12 @@ def need_backup(activities, backup_dir, export_formats=None):
     need_backup = set()
     backed_up = _not_found_activities(backup_dir)
     for f in Path(backup_dir).glob(f"**/*"):
-       backud_up.append(os.path.basename(str(f)))
+       backed_up.append(os.path.basename(str(f)))
 
     # get all activities missing at least one export format
     for activity in activities:
         activity_files = [export_filename(activity, f) for f in export_formats]
-        if any(f not in backed_up for f in activity_files):
+        if any(os.path.basename(f) not in backed_up for f in activity_files):
             need_backup.add(activity)
     return need_backup
 

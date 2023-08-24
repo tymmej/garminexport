@@ -6,6 +6,7 @@ backup directory will be downloaded.
 """
 import argparse
 import logging
+import sys
 import os
 
 from garminexport.backup import supported_export_formats
@@ -85,3 +86,4 @@ def main():
 
     except Exception as e:
         log.error("failed with exception: {}".format(e))
+        sys.exit(1)
