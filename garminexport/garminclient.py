@@ -148,7 +148,7 @@ class GarminClient(object):
         resp = self.session.post(PORTAL_LOGIN_URL, headers=headers, params=params, json=form_data)
         log.debug("got auth response %d: %s", resp.status_code, resp.text)
         if resp.status_code != 200:
-            raise ValueError("authentication attempt failed with f'{resp.status_code}': f'{resp.text}'")
+            raise ValueError(f'authentication attempt failed with {resp.status_code}: {resp.text}')
         return self._extract_auth_ticket_url(resp.json())
 
     def _claim_auth_ticket(self, auth_ticket_url):
