@@ -98,7 +98,7 @@ class GarminClient(object):
 
     def _authenticate(self):
         """
-        Authenticate the user through their Garmin Connect username and password.
+        Authenticates using a Garmin Connect username and password.
 
         The procedure has changed over the years. A good approach for figuring
         it out is to use the browser development tools to trace all requests
@@ -121,7 +121,6 @@ class GarminClient(object):
         """Logs in with the supplied account credentials.
         The return value is a URL where the created authentication ticket can be claimed.
         For example, "https://connect.garmin.com/modern?ticket=ST-2550833-30KdiEJ3jqvFzLNGi2C7-sso"
-
 
         The response message looks typically something like this:
           {
