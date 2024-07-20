@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from datetime import datetime
+from pathlib import Path
 
 log = logging.getLogger(__name__)
 
@@ -43,11 +44,14 @@ def export_filename(activity, export_format):
     :return: The file name to use for the exported activity.
     :rtype: str
     """
-    fn = "{time}_{id}{suffix}".format(
+    time = activity[1].isoformat()
+    fn = "{year}/{month}/{time}_{id}{suffix}".format(
         id=activity[0],
-        time=activity[1].isoformat(),
+        time=time,
+        year=activity[1].year,
+        month=str(activity[1].month).rjust(2, '0'),
         suffix=format_suffix[export_format])
-    return fn.replace(':', '_') if os.name == 'nt' else fn
+    return fn.replace(':', '_')
 
 
 def need_backup(activities, backup_dir, export_formats=None):
@@ -70,12 +74,14 @@ def need_backup(activities, backup_dir, export_formats=None):
     :rtype: set of tuples of `(int, datetime)`
     """
     need_backup = set()
-    backed_up = os.listdir(backup_dir) + _not_found_activities(backup_dir)
+    backed_up = _not_found_activities(backup_dir)
+    for f in Path(backup_dir).glob(f"**/*"):
+       backed_up.append(os.path.basename(str(f)))
 
     # get all activities missing at least one export format
     for activity in activities:
         activity_files = [export_filename(activity, f) for f in export_formats]
-        if any(f not in backed_up for f in activity_files):
+        if any(os.path.basename(f) not in backed_up for f in activity_files):
             need_backup.add(activity)
     return need_backup
 
@@ -115,6 +121,9 @@ def download(client, activity, retryer, backup_dir, export_formats=None):
     :type export_formats: list of str
     """
     id = activity[0]
+
+    dirname = os.path.join(backup_dir, export_filename(activity, 'json_summary'))
+    os.makedirs(os.path.dirname(dirname), exist_ok=True)
 
     if 'json_summary' in export_formats:
         log.debug("getting json summary for %s", id)
